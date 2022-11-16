@@ -1,13 +1,12 @@
 import React from 'react'
 
-export default function navbar() {
+export default function Navbar({ref, onChange}) {
     return (
         <nav className="navbar navbar-dark bg-dark">
             <div className="container-fluid">
-                <a className="navbar-brand">Navbar</a>
+                {/* <img src='https://logodownload.org/wp-content/uploads/2015/12/star-wars-logo-3-1.png' height='100px' /> */}
                 <form className="d-flex" role="search">
-                    <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                    <button className="btn btn-outline-success" type="submit">Search</button>
+                    <input className="form-control mx-auto" type="search" placeholder="Search for a character" aria-label="Search" ref={ref} onChange={onChange}/>
                 </form>
             </div>
         </nav>

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { getPeople, getCharacter, searchCharacter } from "./api/people";
 import './App.css';
+import Modal from "./components/Modal";
+import Navbar from "./components/Navbar";
 
 
 function App() {
@@ -21,10 +23,15 @@ function App() {
   }, [currentCharacter])
 
   const showDetails = (character) => {
-    const id = Number(character.url.split('/').slice(-2)[0])
+    const id = Number(character.url.split('/').slice(-1))
     setCurrentCharacter(id);
+    //console.log(character.url)
+    //console.log(id)
+    //console.log(details.result.properties.name)
+    
     setModal(true)
   }
+  
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -39,23 +46,24 @@ function App() {
     if (!people.next && page + next > 9) return;
 
     setPage(page + next);
+    console.log(page)
   }
 
   return (
-    <div>
-
-      <form className="d-flex  ">
+    <>
+      <Navbar ref={inputSearch} onChange={handleSearch}/>
+      {/* <form className="d-flex  ">
         <input className="mx-auto my-2" ref={inputSearch} type="text" onChange={handleSearch} placeholder="Search for a character"></input>
 
-      </form>
+      </form> */}
       <div className="d-flex flex-column ">
-        <h1 className="mx-auto">Starwars Characters</h1>
-        <h6 className="mx-auto">A guide from a galaxy far, far away </h6>
+        <h1 className="mx-auto mt-3">Starwars Characters</h1>
+        <h6 className="mx-auto mb-5">A guide from a galaxy far, far away </h6>
       </div>
 
       <div className="row d-flex">
         {people?.results?.map((character) => (
-          <div class="card mb-3 mx-2 col-6 text-center mx-auto" key={character.name} onClick={() => showDetails(character)} data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <div class="card mb-3 mx-2 col-6 text-center mx-auto bg-dark" key={character.name} onClick={() => showDetails(character)} data-bs-toggle="modal" data-bs-target="#exampleModal">
             <div class="card-body" >
               <h5 class="card-title">{character.name}</h5>
             </div>
@@ -70,29 +78,12 @@ function App() {
       </section>
       {details && modal && (
         <>
-          <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="exampleModalLabel">{details.name}</h1>
-                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div className="modal-body">
-                  <p>Mass: {details.mass}</p>
-                  <p>Height: {details.height}</p>
-                  <p>Year of Birth: {details.birth_year}</p>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Modal name={details?.result?.properties?.name} mass={details?.result?.properties?.mass} height={details?.result?.properties?.height} birth_year={details?.result?.properties?.birth_year} />
         </>
 
       )}
 
-    </div>
+    </>
   );
 }
 
