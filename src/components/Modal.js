@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Modal({name, mass, height, birth_year}) {
+export default function Modal({ name, mass, height, birth_year }) {
     return (
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog ">

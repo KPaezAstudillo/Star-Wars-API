@@ -3,10 +3,10 @@ import { getPeople, getCharacter, searchCharacter } from "./api/people";
 import './App.css';
 import Modal from "./components/Modal";
 import Navbar from "./components/Navbar";
+import CharacterCard from "./components/CharacterCard";
 
 
 function App() {
-  const inputSearch = useRef();
   const [searchString, setSearchString] = useState();
   const [people, setPeople] = useState([]);
   const [currentCharacter, setCurrentCharacter] = useState();
@@ -23,20 +23,17 @@ function App() {
   }, [currentCharacter])
 
   const showDetails = (character) => {
-    const id = Number(character.url.split('/').slice(-1))
+    const id = Number(character.url.split('/').slice(-2)[0])
+    console.log(Number(character.url.split('/').slice(-2)[0]))
     setCurrentCharacter(id);
-    //console.log(character.url)
-    //console.log(id)
-    //console.log(details.result.properties.name)
-    
+
     setModal(true)
   }
-  
+
 
   const handleSearch = (event) => {
     event.preventDefault();
-    const text = inputSearch.current.value;
-
+    const text = event.target.value;
     setSearchString(text);
     searchCharacter(searchString).then(setPeople)
   }
@@ -46,39 +43,31 @@ function App() {
     if (!people.next && page + next > 9) return;
 
     setPage(page + next);
-    console.log(page)
+  
   }
 
   return (
     <>
-      <Navbar ref={inputSearch} onChange={handleSearch}/>
-      {/* <form className="d-flex  ">
-        <input className="mx-auto my-2" ref={inputSearch} type="text" onChange={handleSearch} placeholder="Search for a character"></input>
-
-      </form> */}
+      <Navbar onChange={handleSearch} />
       <div className="d-flex flex-column ">
         <h1 className="mx-auto mt-3">Starwars Characters</h1>
         <h6 className="mx-auto mb-5">A guide from a galaxy far, far away </h6>
       </div>
-
       <div className="row d-flex">
-        {people?.results?.map((character) => (
-          <div class="card mb-3 mx-2 col-6 text-center mx-auto bg-dark" key={character.name} onClick={() => showDetails(character)} data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <div class="card-body" >
-              <h5 class="card-title">{character.name}</h5>
-            </div>
-          </div>
+        {people?.results?.map((character) =>
+        (
+          <CharacterCard onClick={() => showDetails(character)} key={character.name} name={character.name} />
         ))
         }
       </div>
-      <section className="d-flex">
-        <button className="btn btn-secondary mx-auto" onClick={() => handlePage(-1)}>Previous</button>
-        <p className="mx-auto">Page {page}</p>
-        <button className="btn btn-secondary mx-auto" onClick={() => handlePage(1)}>Next</button>
-      </section>
+      <div className="d-flex">
+        <button className="btn btn-secondary mx-auto bg-warning text-black" onClick={() => handlePage(-1)}>Previous</button>
+        Page {page}
+        <button className="btn btn-secondary mx-auto bg-warning text-black" onClick={() => handlePage(1)}>Next</button>
+      </div>
       {details && modal && (
         <>
-          <Modal name={details?.result?.properties?.name} mass={details?.result?.properties?.mass} height={details?.result?.properties?.height} birth_year={details?.result?.properties?.birth_year} />
+          <Modal name={details?.name} mass={details?.mass} height={details?.height} birth_year={details.birth_year} />
         </>
 
       )}
